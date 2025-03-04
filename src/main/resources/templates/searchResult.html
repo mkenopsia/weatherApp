@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WeatherApp - search results </title>
+</head>
+<body>
+<a th:href="@{/homepage}">To homepage</a>
+<ul>
+    <li th:each="listEl : ${response.getList()}">
+        <span th:text="${listEl.getName()}"/>
+        <span th:text="${listEl.getCoord().getLat()}"/>
+        <span th:text="${listEl.getCoord().getLon()}"/>
+        <span th:text="${listEl.getSys().getCountry()}"/>
+        <form th:action="@{/homepage/add}" th:method="post">
+            <input type="hidden" th:value="${listEl.getName()}" name="name" />
+            <input type="hidden" th:value="${listEl.getCoord().getLat()}" name="Latitude" />
+            <input type="hidden" th:value="${listEl.getCoord().getLon()}" name="Longitude" />
+            <button type="submit">Add</button>
+        </form>
+
+    </li>
+</ul>
+</body>
+</html>

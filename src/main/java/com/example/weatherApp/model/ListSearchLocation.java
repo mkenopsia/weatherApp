@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiResponse {
-    private List<LocationInfo> list;
+public class LocationsInfo {
+    private List<SearchLocationInfo> list;
 
-    public List<LocationInfo> getList() {
+    public List<SearchLocationInfo> getList() {
         return list;
     }
 
-    public void setList(List<LocationInfo> list) {
+    public void setList(List<SearchLocationInfo> list) {
         this.list = list;
     }
 }

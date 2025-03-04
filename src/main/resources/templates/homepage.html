@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>WeatherApp - Homepage</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+
+  </style>
+</head>
+<body>
+<div id="top-right">
+  <p th:text="${username}" style="color: #c37182"></p>
+  <form th:action="@{/logout}" th:method="post">
+    <button type="submit">Sign Out</button>
+  </form>
+</div>
+
+<div>
+<!--  TODO отрисовать список сохранённых -->
+</div>
+
+<div>
+  <form th:action="@{/search}" th:method="get">
+    <label><input type="text" name="location" placeholder="Enter location"></label>
+    <button type="submit"> Search </button>
+  </form>
+</div>
+</body>
+</html>

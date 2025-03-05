@@ -156,4 +156,5 @@ public class SavedLocationInfo {
     public void setId(Long id) {
         this.id = id;
     }
+
 }

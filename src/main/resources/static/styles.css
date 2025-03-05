@@ -10,3 +10,11 @@
     margin: 0; /* Убираем отступы у параграфа */
     margin-right: 10px; /* Отступ между текстом и кнопкой */
 }
+
+#myButton {
+    background-color: #00adfa;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px;
+    font-weight: 300;
+    color: aliceblue;
+}

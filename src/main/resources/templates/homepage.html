@@ -15,16 +15,27 @@
     <button type="submit">Sign Out</button>
   </form>
 </div>
-
-<div>
-<!--  TODO отрисовать список сохранённых -->
-</div>
-
 <div>
   <form th:action="@{/search}" th:method="get">
     <label><input type="text" name="location" placeholder="Enter location"></label>
     <button type="submit"> Search </button>
   </form>
 </div>
+<div>
+  <ul>
+    <li th:each="location : ${savedLocations}">
+      <p>City:  <span th:text="${location.getName()}"/></p>
+      <p>Temp:  <span th:text="${location.getMain().getTemp()}"/></p>
+      <p>Feels like:  <span th:text="${location.getMain().getFeels_like()}"/></p>
+      <p>Humidity:  <span th:text="${location.getMain().getHumidity()}"/></p>
+      <p>Sea level:  <span th:text="${location.getMain().getSea_level()}"/></p>
+      <form th:action="@{/homepage/delete}" th:method="post">
+        <input type="hidden" th:value="${location.getId()}" name="locationId">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+  </ul>
+</div>
+
 </body>
 </html>

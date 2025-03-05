@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SavedLocationsInfo {
+public class SavedLocationInfo {
+    private Long id;
     private List<WeatherInfo> weather;
     private MainInfo main;
     private WindInfo wind;
     private Sys sys;
-    private String 
+    private String name;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class WeatherInfo {
@@ -108,4 +109,51 @@ public class SavedLocationsInfo {
         }
     }
 
+    public List<WeatherInfo> getWeather() {
+        return weather;
+    }
+
+    public void setWeather(List<WeatherInfo> weather) {
+        this.weather = weather;
+    }
+
+    public MainInfo getMain() {
+        return main;
+    }
+
+    public void setMain(MainInfo main) {
+        this.main = main;
+    }
+
+    public WindInfo getWind() {
+        return wind;
+    }
+
+    public void setWind(WindInfo wind) {
+        this.wind = wind;
+    }
+
+    public Sys getSys() {
+        return sys;
+    }
+
+    public void setSys(Sys sys) {
+        this.sys = sys;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

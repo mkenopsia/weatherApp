@@ -29,8 +29,10 @@ public class UserController {
     SessionManagerService sessionManagerService;
 
     @GetMapping("/registration")
-    public String registration(Model model) {
-
+    public String registration(HttpServletRequest request) {
+        if(sessionManagerService.checkIfSessionValid(request)) {
+            return "redirect:/homepage";
+        }
         return "registration";
     }
 
@@ -54,7 +56,10 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage() {
+    public String getLoginPage(HttpServletRequest request) {
+        if(sessionManagerService.checkIfSessionValid(request)) {
+            return "redirect:/homepage";
+        }
         return "login";
     }
 

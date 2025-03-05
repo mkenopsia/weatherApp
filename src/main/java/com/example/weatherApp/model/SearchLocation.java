@@ -2,12 +2,15 @@ package com.example.weatherApp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true) // Игнорировать неизвестные поля
-public class SearchLocationInfo {
+public class SearchLocation {
     private int id;
     private String name;
     private Coord coord;
     private Sys sys;
+    private List<SearchLocation> list;
 
     public static class Coord {
         private double lat;

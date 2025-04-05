@@ -23,22 +23,18 @@ public class SessionRepository {
     }
 
     public Session findById(UUID id) {
-        try {
-            return entityManager.find(Session.class, id);
-        } catch (Exception e) {
-            return null;
-        }
+        TypedQuery<Session> query = entityManager.createQuery(
+                "SELECT s FROM Session s WHERE s.uuid = :id", Session.class);
+        query.setParameter("id", id);
+        return query.getSingleResult();
+//        return entityManager.find(Session.class, id);
     }
 
-    public Session findByUserId(String userId) {
-        try {
-            TypedQuery<Session> query = entityManager.createQuery(
-                    "SELECT s FROM Session s WHERE s.userId = :userId", Session.class);
-            query.setParameter("userId", userId);
-            return query.getSingleResult(); // Может выбросить NoResultException
-        } catch (NoResultException e) {
-            return null;
-        }
+    public Session findByUserId(Long userId) {
+        TypedQuery<Session> query = entityManager.createQuery(
+                "SELECT s FROM Session s WHERE s.user.id = :userId", Session.class);
+        query.setParameter("userId", userId);
+        return query.getSingleResult();
     }
 
     public void delete(Session session) {

@@ -1,6 +1,7 @@
 package com.example.weatherApp.service;
 
 import com.example.weatherApp.model.Session;
+import com.example.weatherApp.model.User;
 import com.example.weatherApp.repositories.SessionRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,15 +22,15 @@ public class SessionManagerService {
     @Autowired
     CookiesService cookiesService;
 
-    public UUID createSession(Long userId) {
+    public UUID createSession(User user) {
         UUID sessionId = generateSessionId();
-        Session newSession = new Session(sessionId, userId, LocalDateTime.now().plusMinutes(30));
+        Session newSession = new Session(sessionId, user, LocalDateTime.now().plusMinutes(30));
         sessionRepository.save(newSession);
         return sessionId;
     }
 
     public Long getUserId(UUID sessionId) {
-        return sessionRepository.findById(sessionId).getUserId();
+        return sessionRepository.findById(sessionId).getUser().getId();
     }
 
     private UUID generateSessionId() {
@@ -44,7 +45,7 @@ public class SessionManagerService {
         return sessionRepository.findById(id);
     }
 
-    public Session getSessionByUserId(String userId) {
+    public Session getSessionByUserId(Long userId) {
         return sessionRepository.findByUserId(userId);
     }
 
@@ -59,15 +60,6 @@ public class SessionManagerService {
     public boolean checkIfSessionValid(HttpServletRequest request) {
         UUID sessionId = cookiesService.getSessionId(request.getCookies());
         if(sessionId == null) { // если кукис удалился
-            return false;
-        }
-        Session currSession = getSessionById(sessionId);
-        if(currSession == null) { // если кукис есть в браузере, а сессии нет
-            cookiesService.deleteCookie(cookiesService.getIdentificatorCookie(request.getCookies()));
-            return false;
-        }
-
-        if(isExpired(currSession)) {
             return false;
         }
 

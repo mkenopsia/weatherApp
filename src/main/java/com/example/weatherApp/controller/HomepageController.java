@@ -3,9 +3,7 @@ package com.example.weatherApp.controller;
 import com.example.weatherApp.model.Location;
 import com.example.weatherApp.repositories.LocationRepository;
 import com.example.weatherApp.repositories.UserRepository;
-import com.example.weatherApp.service.CookiesService;
-import com.example.weatherApp.service.OpenWeatherApiService;
-import com.example.weatherApp.service.SessionManagerService;
+import com.example.weatherApp.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/homepage")
 public class HomepageController {
     @Autowired
-    CookiesService cookiesService;
+    private CookiesService cookiesService;
     @Autowired
-    SessionManagerService sessionManagerService;
+    private SessionManagerService sessionManagerService;
     @Autowired
-    UserRepository userRepository;
+    private UserService userService;
     @Autowired
-    LocationRepository locationRepository;
+    private OpenWeatherApiService openWeatherApiService;
     @Autowired
-    OpenWeatherApiService openWeatherApiService;
+    private LocationService locationService;
 
     @GetMapping
     public String index(Model model, HttpServletRequest request) throws JsonProcessingException {
@@ -33,27 +31,37 @@ public class HomepageController {
             return "redirect:/login";
         }
         Long userId = cookiesService.getUserId(request.getCookies());
-        model.addAttribute("username", userRepository.findById(userId).getName());
+        model.addAttribute("username", userService.findUserById(userId).getName());
         model.addAttribute("savedLocations", openWeatherApiService.getSavedLocationsWeatherInfo(userId));
         return "homepage";
     }
 
     @PostMapping("/add")
-    public String addLocation(@ModelAttribute Location location, Model model, HttpServletRequest request) {
+    public String addLocation(@ModelAttribute Location location, HttpServletRequest request) {
         if(!sessionManagerService.checkIfSessionValid(request)) {
             return "redirect:/login";
         }
-        location.setUserId(cookiesService.getUserId(request.getCookies()));
-        locationRepository.save(location);
+        location.setUser(userService.findUserById(cookiesService.getUserId(request.getCookies())));
+        locationService.save(location);
         return "redirect:/homepage";
     }
 
     @PostMapping("/delete")
-    public String deleteLocation(@RequestParam("locationId") Long locationId, HttpServletRequest request) {
+    public String deleteLocation(@RequestParam("locationId") Long locationId,
+                                 HttpServletRequest request, Model model) {
         if(!sessionManagerService.checkIfSessionValid(request)) {
             return "redirect:/login";
         }
-        locationRepository.delete(locationId);
+
+        Long userId = cookiesService.getUserId(request.getCookies());
+        Location location = locationService.findById(locationId);
+        if(location == null) {
+            model.addAttribute("message", "Nothing to delete");
+            return "redirect:/error";
+        }
+        if(location.getUser().getId().equals(userId)) {
+            locationService.delete(locationId);
+        }
         return "redirect:/homepage";
     }
 }

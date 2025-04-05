@@ -22,11 +22,11 @@ import java.util.UUID;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    CookiesService cookiesService;
+    private CookiesService cookiesService;
     @Autowired
-    SessionManagerService sessionManagerService;
+    private SessionManagerService sessionManagerService;
 
     @GetMapping("/registration")
     public String registration(HttpServletRequest request) {
@@ -77,10 +77,10 @@ public class UserController {
             return "login";
         }
 
-        Session session = sessionManagerService.getSessionByUserId(currUser.getId().toString());
+        Session session = sessionManagerService.getSessionByUserId(currUser.getId());
         UUID sessionId = (session == null) ? null : session.getId(); // если для юзера нет сессии в таблице - создаём
         if(sessionId == null || sessionManagerService.isExpired(session)) {
-            sessionId = sessionManagerService.createSession(currUser.getId());
+            sessionId = sessionManagerService.createSession(currUser);
         }
 
         response.addCookie(cookiesService.getNewCookie(sessionId));
@@ -90,12 +90,10 @@ public class UserController {
 
     @PostMapping("/logout")
     public String logout(Model model, HttpServletRequest request, HttpServletResponse response) {
-        // TODO вынести в сервис
-        UUID sessionId = cookiesService.getSessionId(request.getCookies());
-        sessionManagerService.deleteSession(sessionId);
-        Cookie currCookie = cookiesService.getIdentificatorCookie(request.getCookies());
-        cookiesService.deleteCookie(currCookie);
-        response.addCookie(currCookie);
+        if(!sessionManagerService.checkIfSessionValid(request)) {
+            return "redirect:/login";
+        }
+        response.addCookie(cookiesService.deleteCookie(request.getCookies()));
         return "redirect:/login";
     }
 }

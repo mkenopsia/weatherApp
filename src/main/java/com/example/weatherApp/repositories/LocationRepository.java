@@ -26,15 +26,12 @@ public class LocationRepository {
     }
 
     public List<Location> findLocationsByUserId(Long userId) {
-        try {
-            TypedQuery<Location> query = entityManager.createQuery(
-                    "SELECT l FROM Location l WHERE l.userId = :userId", Location.class);
-            query.setParameter("userId", userId);
-            return query.getResultList(); // Может выбросить NoResultException
-        } catch (NoResultException e) {
-            return null;
-        }
+        TypedQuery<Location> query = entityManager.createQuery(
+                "SELECT l FROM Location l WHERE l.user.id = :userId", Location.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
     }
+
 
     public void delete(Long id) {
         Location location = findById(id);

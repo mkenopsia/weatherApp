@@ -21,8 +21,8 @@
                     <p class="card-text"></p><span th:text="${listEl.getSys().getCountry()}"/></p>
                     <form th:action="@{/homepage/add}" th:method="post">
                         <input type="hidden" th:value="${listEl.getName()}" name="name" />
-                        <input type="hidden" th:value="${listEl.getCoord().getLat()}" name="Latitude" />
-                        <input type="hidden" th:value="${listEl.getCoord().getLon()}" name="Longitude" />
+                        <input type="hidden" th:value="${listEl.getCoord().getLat()}" name="latitude" />
+                        <input type="hidden" th:value="${listEl.getCoord().getLon()}" name="longitude" />
                         <button class="btn btn-outline-primary" type="submit">Add</button>
                     </form>
                 </div>

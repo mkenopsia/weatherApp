@@ -15,7 +15,7 @@ public class CookiesService {
     @Autowired
     SessionManagerService sessionManagerService;
 
-    public Long getUserId(Cookie[] cookies) {
+    private String getSessionIdFromCookies(Cookie[] cookies) {
         if (cookies == null)
             return null;
         String sessionId = null;
@@ -25,21 +25,16 @@ public class CookiesService {
                 break;
             }
         }
+        return sessionId;
+    }
 
+    public Long getUserId(Cookie[] cookies) {
+        String sessionId = getSessionIdFromCookies(cookies);
         return sessionManagerService.getUserId(UUID.fromString(sessionId));
     }
 
     public UUID getSessionId(Cookie[] cookies) {
-        if (cookies == null)
-            return null;
-        String sessionId = null;
-        for (Cookie cookie : cookies) {
-            if ("sessionId".equals(cookie.getName())) {
-                sessionId = cookie.getValue();
-                break;
-            }
-        }
-
+        String sessionId = getSessionIdFromCookies(cookies);
         return (sessionId != null) ? UUID.fromString(sessionId) : null;
     }
 
@@ -54,8 +49,11 @@ public class CookiesService {
         return null;
     }
 
-    public void deleteCookie(Cookie cookie) {
+    public Cookie deleteCookie(Cookie[] cookies) {
+        Cookie cookie = getIdentificatorCookie(cookies);
+        sessionManagerService.deleteSession(UUID.fromString(cookie.getValue()));
         cookie.setMaxAge(0);
+        return cookie;
     }
 
     public Cookie getNewCookie(UUID sessionId) {

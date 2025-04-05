@@ -6,35 +6,44 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "sessions")
+@Table(name = "t_session", schema = "sessions")
 public class Session {
     @Id
-    private UUID id;
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @Column(name = "c_uuid")
+    private UUID uuid;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", referencedColumnName = "id")
+    private User user;
+
+    @Column(name = "c_expires_at")
     private LocalDateTime expiresAt;
 
     public Session() {}
 
-    public Session(UUID id, Long userId, LocalDateTime expiresAt) {
-        this.id = id;
-        this.userId = userId;
+    public Session(UUID uuid, User user, LocalDateTime expiresAt) {
+        this.uuid = uuid;
+        this.user = user;
         this.expiresAt = expiresAt;
     }
 
     public UUID getId() {
-        return id;
+        return uuid;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setId(UUID uuid) {
+        this.uuid = uuid;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getExpiresAt() {

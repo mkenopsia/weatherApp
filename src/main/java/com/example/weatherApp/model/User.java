@@ -5,13 +5,19 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "t_user", schema = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "c_name")
     private String name;
+
+    @Column(name = "c_password")
     private String password;
+
+    @Column(name = "c_authority")
     private String role;
 
     public User() {}

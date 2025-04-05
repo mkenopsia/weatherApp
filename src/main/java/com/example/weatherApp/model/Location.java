@@ -3,15 +3,25 @@ package com.example.weatherApp.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "t_location", schema = "locations")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "c_name")
     private String name;
-    private Long userId;
-    private double Latitude;
-    private double Longitude;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", referencedColumnName = "id")
+    private User user;
+
+
+    @Column(name = "c_latitude")
+    private double latitude;
+
+    @Column(name = "c_longitude")
+    private double longitude;
 
     public Location() {}
 
@@ -31,27 +41,27 @@ public class Location {
         this.name = name;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public double getLatitude() {
-        return Latitude;
+        return latitude;
     }
 
     public void setLatitude(double latitude) {
-        Latitude = latitude;
+        this.latitude = latitude;
     }
 
     public double getLongitude() {
-        return Longitude;
+        return longitude;
     }
 
     public void setLongitude(double longitude) {
-        Longitude = longitude;
+        this.longitude = longitude;
     }
 }

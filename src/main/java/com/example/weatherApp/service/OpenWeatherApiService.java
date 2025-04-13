@@ -1,12 +1,12 @@
 package com.example.weatherApp.service;
 
-import com.example.weatherApp.service.payload.ListSearchLocation;
 import com.example.weatherApp.model.Location;
+import com.example.weatherApp.service.payload.ListSearchLocation;
 import com.example.weatherApp.service.payload.SavedLocationInfo;
 import com.example.weatherApp.service.payload.SearchLocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,19 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class OpenWeatherApiService {
 
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private LocationService locationService;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final LocationService locationService;
+
+    private final String apiKey;
 
     public String getSearchRequest(String city) {
         String url = String.format(
-                "https://ru.api.openweathermap.org/data/2.5/find?q=%s&appid=839477f9e96302537b9c73cfaf97c58e&lang=ru",
-                city
+                "https://api.openweathermap.org/data/2.5/find?q=%s&appid=%s&lang=ru",
+                city,
+                apiKey
         );
         return restTemplate.getForObject(url, String.class);
     }
@@ -40,9 +41,10 @@ public class OpenWeatherApiService {
         List<SavedLocationInfo> locationsWeatherInfo = new ArrayList<>();
         for(Location location : savedLocations) {
             String url = String.format(
-                    "https://ru.api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&appid=%s&units=metric",
-                    location.getLatitude(), location.getLongitude(),
-                    "839477f9e96302537b9c73cfaf97c58e"
+                    "https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&appid=%s&units=metric",
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    apiKey
             );
             SavedLocationInfo currLocation;
             String getRequest = restTemplate.getForObject(url, String.class);

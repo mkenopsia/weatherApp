@@ -1,4 +1,4 @@
-package com.example.weatherApp.model;
+package com.example.weatherApp.service.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

@@ -9,6 +9,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -22,22 +23,33 @@ public class SessionRepository {
         entityManager.persist(session);
     }
 
-    public Session findById(UUID id) {
-        TypedQuery<Session> query = entityManager.createQuery(
-                "SELECT s FROM Session s WHERE s.uuid = :id", Session.class);
-        query.setParameter("id", id);
-        return query.getSingleResult();
-//        return entityManager.find(Session.class, id);
+    public Optional<Session> findById(UUID id) {
+        try {
+            TypedQuery<Session> query = entityManager.createQuery(
+                    "SELECT s FROM Session s WHERE s.uuid = :id", Session.class);
+            query.setParameter("id", id);
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
-    public Session findByUserId(Long userId) {
-        TypedQuery<Session> query = entityManager.createQuery(
-                "SELECT s FROM Session s WHERE s.user.id = :userId", Session.class);
-        query.setParameter("userId", userId);
-        return query.getSingleResult();
+    public Optional<Session> findByUserId(Long userId) {
+        try {
+            TypedQuery<Session> query = entityManager.createQuery(
+                    "SELECT s FROM Session s WHERE s.user.id = :userId", Session.class);
+            query.setParameter("userId", userId);
+            return Optional.of(query.getSingleResult());
+        } catch(NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     public void delete(Session session) {
         entityManager.remove(entityManager.contains(session) ? session : entityManager.merge(session));
+    }
+
+    public void updateExpirationTime(Session session) {
+        entityManager.merge(session);
     }
 }

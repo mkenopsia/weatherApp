@@ -12,17 +12,17 @@
 
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-3 mb-4" th:each="listEl : ${response.getList()}">
+        <div class="col-md-3 mb-4" th:each="location : ${response}">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">City: <span th:text="${listEl.getName()}"/> </h5>
-                    <p class="card-text"><span th:text="${listEl.getCoord().getLat()}"/></p>
-                    <p class="card-text"></p><span th:text="${listEl.getCoord().getLon()}"/></p>
-                    <p class="card-text"></p><span th:text="${listEl.getSys().getCountry()}"/></p>
+                    <h5 class="card-title">City: <span th:text="${location.getName()}"/> </h5>
+                    <p class="card-text"><span th:text="${location.getCoord().getLat()}"/></p>
+                    <p class="card-text"></p><span th:text="${location.getCoord().getLon()}"/></p>
+                    <p class="card-text"></p><span th:text="${location.getSys().getCountry()}"/></p>
                     <form th:action="@{/homepage/add}" th:method="post">
-                        <input type="hidden" th:value="${listEl.getName()}" name="name" />
-                        <input type="hidden" th:value="${listEl.getCoord().getLat()}" name="latitude" />
-                        <input type="hidden" th:value="${listEl.getCoord().getLon()}" name="longitude" />
+                        <input type="hidden" th:value="${location.getName()}" name="name" />
+                        <input type="hidden" th:value="${location.getCoord().getLat()}" name="latitude" />
+                        <input type="hidden" th:value="${location.getCoord().getLon()}" name="longitude" />
                         <button class="btn btn-outline-primary" type="submit">Add</button>
                     </form>
                 </div>

@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -25,15 +26,14 @@ public class UserRepository {
         return entityManager.find(User.class, id);
     }
 
-    public User findByName(String name) {
+    public Optional<User> findByName(String name) {
         try {
             TypedQuery<User> query = entityManager.createQuery(
                     "SELECT u FROM User u WHERE u.name = :name", User.class);
             query.setParameter("name", name);
-            return query.getSingleResult(); // Может выбросить NoResultException
+            return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
-            // Обработка случая, когда пользователь не найден
-            return null; // Или выбросить кастомное исключение
+            return Optional.empty();
         }
     }
     

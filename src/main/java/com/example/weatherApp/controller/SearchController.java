@@ -19,6 +19,4 @@ public class SearchController {
         model.addAttribute("response", openWeatherApiService.getLocations(location));
         return "searchResult";
     }
-
-
 }

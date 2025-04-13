@@ -1,6 +1,7 @@
 package com.example.weatherApp.repositories;
 
 import com.example.weatherApp.model.User;
+import com.example.weatherApp.service.payload.SearchLocation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;

@@ -23,8 +23,7 @@ public class JpaConfig {
         em.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true); // Автоматически генерировать DDL
-        vendorAdapter.setShowSql(true); // Показывать SQL-запросы в логах
+//        vendorAdapter.setShowSql(true); // Показывать SQL-запросы в логах
         em.setJpaVendorAdapter(vendorAdapter);
         return em;
     }

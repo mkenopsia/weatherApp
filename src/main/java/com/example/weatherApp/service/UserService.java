@@ -23,6 +23,8 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
+    private final CookiesService cookiesService;
+
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -50,5 +52,10 @@ public class UserService {
 
     public boolean checkPassword(String rawPassword, String hashedPassword) {
         return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
+
+    public User getUserFromCookies(HttpServletRequest request) {
+        Long userId = this.cookiesService.getUserId(request.getCookies());
+        return findUserById(userId);
     }
 }

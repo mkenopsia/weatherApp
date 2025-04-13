@@ -13,9 +13,15 @@
     <p th:text="${message}"></p>
 </div>
 
+<div th:if="${errors}">
+    <div th:each="error : ${errors}">
+        <p th:text="${error.getDefaultMessage()}"></p>
+    </div>
+</div>
+
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="form-group">
-        <h3 class="container d-flex justify-content-center align-items-center"> Sign up </h1>
+        <h1 class="container d-flex justify-content-center align-items-center"> Sign up </h1>
         <form th:action="@{/registration}" method="post">
             <div class="mb-3">
                 <label>User Name:</label>

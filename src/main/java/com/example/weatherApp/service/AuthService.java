@@ -23,10 +23,10 @@ public class AuthService {
 
     public void registerUser(UserPayload userPayload, String confirmPassword) throws UserException, PasswordException {
         if(this.userService.findUserByName(userPayload.name()).isPresent()) {
-            throw new UserException("Пользователь с таким именем уже существует");
+            throw new UserException("User with this name already exists");
         }
         if(!userPayload.password().equals(confirmPassword)) {
-            throw new PasswordException("Введённые пароли не совпадают");
+            throw new PasswordException("Passwords must be similar");
         }
 
         User user = new User();
@@ -37,18 +37,15 @@ public class AuthService {
     }
 
     public void loginUser(UserPayload userPayload, HttpServletResponse response) throws UserException, PasswordException {
-        Optional<User> currUser = this.userService.findUserByName(userPayload.name());
+        User user = this.userService.findUserByName(userPayload.name())
+                .orElseThrow(() -> new UserException("User with this name doesn't exist"));
 
-        if(currUser.isEmpty()) {
-            throw new UserException("Пользователь с таким именем не найден");
+        if(!this.userService.checkPassword(userPayload.password(), user.getPassword())) {
+            throw new PasswordException("Incorrect password");
         }
 
-        if(!this.userService.checkPassword(userPayload.password(), currUser.get().getPassword())) {
-            throw new PasswordException("Неверный пароль");
-        }
-
-        Session session = this.sessionManagerService.getSessionByUserId(currUser.get().getId());
-        UUID sessionId = this.sessionManagerService.getSessionId(session, currUser.get());
+        Session session = this.sessionManagerService.getSessionByUserId(user.getId());
+        UUID sessionId = this.sessionManagerService.getSessionId(session, user);
 
         response.addCookie(cookiesService.getNewCookie(sessionId));
     }

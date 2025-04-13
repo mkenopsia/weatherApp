@@ -12,6 +12,12 @@
     <p th:text="${message}" style="color: red"></p>
 </div>
 
+<div th:if="${errors}">
+    <div th:each="error : ${errors}">
+        <p th:text="${error.getDefaultMessage()}"></p>
+    </div>
+</div>
+
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="form-group">
         <h3 class="container d-flex justify-content-center align-items-center"> Sign in </h3>

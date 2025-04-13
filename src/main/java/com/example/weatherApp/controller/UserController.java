@@ -3,18 +3,15 @@ package com.example.weatherApp.controller;
 import com.example.weatherApp.controller.payload.UserPayload;
 import com.example.weatherApp.exceptions.PasswordException;
 import com.example.weatherApp.exceptions.UserException;
-import com.example.weatherApp.model.User;
 import com.example.weatherApp.service.AuthService;
-import com.example.weatherApp.service.SessionManagerService;
-import com.example.weatherApp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final AuthService authService;
@@ -35,23 +33,21 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public String registerUser(@ModelAttribute @Valid UserPayload user,
+    public String registerUser(@Valid @ModelAttribute UserPayload user,
+                               BindingResult bindingResult,
                                @RequestParam("confirm_password") String confirm,
-                               Model model, BindingResult bindingResult) throws BindException {
+                               Model model) {
         if(bindingResult.hasErrors()) {
-            if(bindingResult instanceof BindException exception) {
-                throw exception;
-            } else {
-                throw new BindException(bindingResult);
-            }
-        } else {
-            try {
-                authService.registerUser(user, confirm);
-                return "redirect:/login";
-            } catch (UserException | PasswordException e) {
-                model.addAttribute("message", e.getMessage());
-                return "registration";
-            }
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "registration";
+        }
+
+        try {
+            authService.registerUser(user, confirm);
+            return "redirect:/login";
+        } catch (UserException | PasswordException e) {
+            model.addAttribute("message", e.getMessage());
+            return "registration";
         }
     }
 
@@ -64,9 +60,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@ModelAttribute User user, Model model, HttpServletResponse response) {
+    public String loginUser(@Valid @ModelAttribute UserPayload userPayload,
+                            BindingResult bindingResult,
+                            Model model,
+                            HttpServletResponse response) {
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "login";
+        }
+
         try {
-            this.authService.loginUser(user, response);
+            this.authService.loginUser(userPayload, response);
             return "redirect:/homepage";
         } catch (UserException | PasswordException e) {
             model.addAttribute("message", e.getMessage());
